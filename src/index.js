@@ -1,6 +1,6 @@
 const {
   routeExists, routeAbsolute, mdFile, readFile, /* readDocument, urlFound */
-// eslint-disable-next-line import/extensions
+  // eslint-disable-next-line import/extensions
 } = require('./main.js');
 
 const pathAbsolute = 'D:/Casa/Google Drive/Daniela Andrade/LABORATORIA/LIM018-md-links/prueba.md';
@@ -17,11 +17,21 @@ const path = (pathFile) => {
   } else {
     return 'La ruta ingresada es inválida';
   }
-  return pathFile;
+  return readFile(pathFile, 'utf-8');
 };
 
-path(pathAbsolute);
-console.log(path(pathRelative));
+// FUNCIÓN PARA LEER EL ARCHIVO
+/* const readingFile = (pathFile) => {
+  if ((path(pathFile) !== true) && (path(pathFile) !== '.md')) {
+    return 'No se puede leer el archivo, ingrese un archivo o ruta válida';
+  }
+  return readFile(pathFile, 'utf-8');
+}; */
+
+path(pathRelative);
+console.log(path(pathAbsolute));
+/* readingFile(pathRelative, 'utf-8');
+console.log(readingFile(documentNoMd, 'utf-8')); */
 
 /* console.log('el archivo es .md?', path(documentNoMd));
  */
