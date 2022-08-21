@@ -1,31 +1,36 @@
 const fs = require('fs');
 const path = require('path');
-/* const path = require('path'); */
+/* const axios = require('axios').default; */
 
 // FUNCIÓN PARA VALIDAR SI LA RUTA EXISTE
 const routeExists = (pathFile) => fs.existsSync(pathFile);
 
-// FUNCIÓN PARA VALIDAR SI LA RUTA ES ABSOLUTA
-const routeAbsolute = (pathFile) => path.isAbsolute(pathFile);
+// FUNCIÓN PARA VALIDAR SI LA RUTA ES ABSOLUTA Y SI ES RELATIVA, CONVIERTE A ABSOLUTA
+const routeAbsolute = (pathFile) => (path.isAbsolute(pathFile) ? pathFile : path.resolve(pathFile));
 
-// FUNCIÓN PARA SABER SI LA EXTENSIÓN DEL ARCHIVO ES .MD
-const mdFile = (fileExt) => path.extname(fileExt);
+// FUNCIÓN PARA SABER SI LA EXTENSIÓN DEL ARCHIVO ES MARKDOWN
+const mdFileExtension = (pathFile) => path.extname(pathFile);
 
-// FUNCIÓN PARA LEER EL ARCHIVO
-const readFile = (pathFile, typeDocument) => fs.readFileSync(pathFile, typeDocument);
+// FUNCIÓN PARA LEER EL ARCHIVO MARKDOWN
+const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
 
-/* const matchUrl = /http([^"'\s]+)/ig;
+// FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
+const getUrls = (file) => {
+  const regExp = /\[(.*?)\]\(.*?\)/gm;
+  const urlsFound = file.match(regExp);
+  console.log('dentro de la función');
+  return urlsFound;
+};
+getUrls('prueba.md');
+console.log('aqui', getUrls('prueba.md'));
 
-const readDocument = fs.readFileSync('./prueba.md', 'utf-8');
-console.log('ACÁ ESTOY =>', readDocument);
-const urlFound = readDocument.match(matchUrl);
-console.log(urlFound); */
+// regex diana = /\[([^\[]+)\](\(.*\))/gm;
+// regex bella = /\[(.*?)\]\(.*?\)/gm; */
 
 module.exports = {
   routeExists,
   routeAbsolute,
-  mdFile,
+  mdFileExtension,
   readFile,
-  /* readDocument,
-  urlFound, */
+  getUrls,
 };
