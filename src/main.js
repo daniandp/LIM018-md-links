@@ -16,16 +16,13 @@ const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
 
 // FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
 const getUrls = (file) => {
+  const readingFiles = readFile(file, 'utf-8');
   const regExp = /\[(.*?)\]\(.*?\)/gm;
-  const urlsFound = file.match(regExp);
-  console.log('dentro de la función');
+  const urlsFound = readingFiles.match(regExp);
   return urlsFound;
 };
 getUrls('prueba.md');
 console.log('aqui', getUrls('prueba.md'));
-
-// regex diana = /\[([^\[]+)\](\(.*\))/gm;
-// regex bella = /\[(.*?)\]\(.*?\)/gm; */
 
 module.exports = {
   routeExists,
@@ -34,3 +31,6 @@ module.exports = {
   readFile,
   getUrls,
 };
+
+// regex diana = /\[([^\[]+)\](\(.*\))/gm;
+// regex bella = /\[(.*?)\]\(.*?\)/gm; */
