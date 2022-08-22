@@ -9,7 +9,7 @@ describe('routeExists', () => {
 });
 
 describe('routeAbsolute', () => {
-  it('Valida que la ruta proporcionada sea absoluta y si no lo es la convierte a absoluta', () => {
+  it('Si la ruta existe, debe retornar la ruta absoluta del archivo, si la ruta es relativa la convierte a absoluta', () => {
     const pathAbsolute = 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\prueba.md';
     expect(pathAbsolute).toBe(pathAbsolute);
     expect(routeAbsolute('prueba.md')).toBe(pathAbsolute);
@@ -17,13 +17,13 @@ describe('routeAbsolute', () => {
 });
 
 describe('mdFileExtension', () => {
-  it('Valida que la extensión del archivo sea .md', () => {
+  it('Si el archivo es tipo markdown, debe retornar .md', () => {
     expect(mdFileExtension('prueba.md')).toBe('.md');
   });
 });
 
 describe('', () => {
-  it('Lee el contenido del archivo markdown y lo muestra en la terminal', () => {
+  it('Retorna el contenido del archivo markdown y lo muestra en la terminal', () => {
     const file = 'Archivo de prueba para el test';
     expect(readFile('pruebaTest.md')).toBe(file);
   });

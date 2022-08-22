@@ -15,21 +15,32 @@ const mdFileExtension = (pathFile) => path.extname(pathFile);
 const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
 
 // FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
-const getUrls = (file) => {
+const getLinks = (file) => {
+  const arrayOfLinks = [];
   const readingFiles = readFile(file, 'utf-8');
   const regExp = /\[(.*?)\]\(.*?\)/gm;
   const urlsFound = readingFiles.match(regExp);
-  return urlsFound;
+  urlsFound.map((url) => {
+    const text = url.slice(1, url.indexOf(']'));
+    const objOfLinks = {
+      href: url.slice(url.indexOf(']') + 2, url.length - 1),
+      text,
+      file,
+    };
+    return arrayOfLinks.push(objOfLinks);
+  });
+  return arrayOfLinks;
 };
-getUrls('prueba.md');
-console.log('aqui', getUrls('prueba.md'));
+
+getLinks('prueba.md');
+console.log('aqui', getLinks('prueba.md'));
 
 module.exports = {
   routeExists,
   routeAbsolute,
   mdFileExtension,
   readFile,
-  getUrls,
+  getLinks,
 };
 
 // regex diana = /\[([^\[]+)\](\(.*\))/gm;
