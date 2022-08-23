@@ -1,6 +1,7 @@
+const { default: axios } = require('axios');
 const fs = require('fs');
 const path = require('path');
-/* const axios = require('axios').default; */
+/* const axios = require('axios'); */
 
 // FUNCIÓN PARA VALIDAR SI LA RUTA EXISTE
 const routeExists = (pathFile) => fs.existsSync(pathFile);
@@ -23,17 +24,29 @@ const getLinks = (file) => {
   urlsFound.map((url) => {
     const text = url.slice(1, url.indexOf(']'));
     const objOfLinks = {
-      href: url.slice(url.indexOf(']') + 2, url.length - 1),
-      text,
-      file,
+      href: url.slice(url.indexOf(']') + 2, url.length - 1), // URL encontrada
+      text, // texto qe aparecía dentro del link
+      file, // ruta del archivo donde se encontró el link entre []
     };
     return arrayOfLinks.push(objOfLinks);
   });
   return arrayOfLinks;
 };
 
-getLinks('prueba.md');
-console.log('aqui', getLinks('prueba.md'));
+// FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
+const validateUrlStatus = (url) => {
+  axios.get(url)
+    .then((response) => {
+      console.log('UNO', response.status);
+      console.log('DOS', response.statusText);
+    })
+    .catch((error) => {
+      console.log('TRES', error);
+    });
+};
+
+// console.log(getLinks('prueba.md'));
+console.log('CUATRO', validateUrlStatus('https://es.wikipedia.org/wiki/Markdown'));
 
 module.exports = {
   routeExists,
@@ -41,6 +54,7 @@ module.exports = {
   mdFileExtension,
   readFile,
   getLinks,
+  validateUrlStatus,
 };
 
 // regex diana = /\[([^\[]+)\](\(.*\))/gm;
