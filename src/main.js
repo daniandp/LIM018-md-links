@@ -8,10 +8,19 @@ const routeExists = (pathFile) => fs.existsSync(pathFile);
 // FUNCIÓN PARA VALIDAR SI LA RUTA ES ABSOLUTA Y SI ES RELATIVA, CONVIERTE A ABSOLUTA
 const routeAbsolute = (pathFile) => (path.isAbsolute(pathFile) ? pathFile : path.resolve(pathFile));
 
-// FUNCIÓN PARA SABER SI LA EXTENSIÓN DEL ARCHIVO ES MARKDOWN
+// FUNCIÓN PARA VALIDAR SI LA EXTENSIÓN DEL ARCHIVO ES MARKDOWN
 const mdFileExtension = (pathFile) => path.extname(pathFile);
 
-// FUNCIÓN PARA LEER EL ARCHIVO MARKDOWN
+// FUNCIÓN PARA VALIDAR SI ES UN DIRECTORIO
+const isADirectory = (pathFile) => fs.lstatSync(pathFile).isDirectory();
+
+// FUNCIÓN PARA VALIDAR SI ES UN ARCHIVO
+const isAFile = (pathFile) => fs.lstatSync(pathFile).isFile();
+
+// FUNCIÓN PARA LEER EL DIRECTORIO
+const readDirectory = (pathFile) => fs.readdirSync(pathFile);
+
+// FUNCIÓN PARA LEER EL ARCHIVO
 const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
 
 // FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
@@ -33,7 +42,7 @@ const getLinks = (file) => {
 };
 
 // FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
-const validateUrlStatus = (arrayOfLinks) => axios.get(arrayOfLinks);
+const validateUrlStatus = (url) => axios.get(url);
 
 /* const validateUrlStatus = (arrayOfLinks) => {
   const linkStatus = arrayOfLinks.map((links) => axios.get(links.href)
@@ -49,16 +58,17 @@ const validateUrlStatus = (arrayOfLinks) => axios.get(arrayOfLinks);
 }; */
 
 // console.log(getLinks('prueba.md'));
-validateUrlStatus(getLinks('prueba.md')).then((response) => {
-  response.forEach((elem) => {
-    console.log(elem.status, elem.statusText);
-  });
-});
+/* validateUrlStatus('https://nodejs.org/').then((response) => {
+  console.log(response.status, response.statusText);
+}); */
 
 module.exports = {
   routeExists,
   routeAbsolute,
   mdFileExtension,
+  isADirectory,
+  isAFile,
+  readDirectory,
   readFile,
   getLinks,
   validateUrlStatus,
