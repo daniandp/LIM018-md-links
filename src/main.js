@@ -1,7 +1,6 @@
-const { default: axios } = require('axios');
 const fs = require('fs');
 const path = require('path');
-/* const axios = require('axios'); */
+const axios = require('axios');
 
 // FUNCIÓN PARA VALIDAR SI LA RUTA EXISTE
 const routeExists = (pathFile) => fs.existsSync(pathFile);
@@ -34,19 +33,27 @@ const getLinks = (file) => {
 };
 
 // FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
-const validateUrlStatus = (url) => {
-  axios.get(url)
-    .then((response) => {
-      console.log('UNO', response.status);
-      console.log('DOS', response.statusText);
-    })
-    .catch((error) => {
-      console.log('TRES', error);
-    });
-};
+const validateUrlStatus = (arrayOfLinks) => axios.get(arrayOfLinks);
+
+/* const validateUrlStatus = (arrayOfLinks) => {
+  const linkStatus = arrayOfLinks.map((links) => axios.get(links.href)
+    .then((response) => ({
+      status: response.status,
+      statusText: response.statusText,
+    }))
+    .catch(() => ({
+      status: 'ERROR',
+      statusText: 'FAIL',
+    })));
+  return Promise.all(linkStatus);
+}; */
 
 // console.log(getLinks('prueba.md'));
-console.log('CUATRO', validateUrlStatus('https://es.wikipedia.org/wiki/Markdown'));
+validateUrlStatus(getLinks('prueba.md')).then((response) => {
+  response.forEach((elem) => {
+    console.log(elem.status, elem.statusText);
+  });
+});
 
 module.exports = {
   routeExists,

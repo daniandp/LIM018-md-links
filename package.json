@@ -5,7 +5,7 @@
     "node": ">=16.x"
   },
   "scripts": {
-    "start": "node src/main.js",
+    "start": "node src/mdLinks.js",
     "eslint": "eslint --ext .js src/ test/",
     "pretest": "npm run eslint",
     "test": "jest --coverage"
