@@ -45,21 +45,26 @@ const getLinks = (file) => {
 const validateUrlStatus = (pathFile) => new Promise((resolve) => {
   const savedLinks = getLinks(pathFile);
   const arrayLinksPromises = [];
+  console.log(savedLinks.length);
   for (let i = 0; i < savedLinks.length; i += 1) {
     const validateLinks = axios.get(savedLinks[i].href)
       .then((response) => {
+       /*  console.log('aqui estamos'); */
         savedLinks[i].status = response.status;
         savedLinks[i].message = response.statusText;
         return savedLinks;
       })
       .catch(() => {
+       /*  console.log('en el catch'); */
         savedLinks[i].status = 'ERROR';
         savedLinks[i].message = 'FAIL';
         return savedLinks;
       });
     arrayLinksPromises.push(validateLinks);
+    /* console.log('array de links', arrayLinksPromises); */
   }
-  resolve(arrayLinksPromises);
+  resolve(Promise.all(arrayLinksPromises));
+  // resolve(arrayLinksPromises);
 });
 
 /* const validateUrlStatus = (arrayOfLinks) => {
