@@ -12,11 +12,7 @@ const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
 
   if (options.validate) {
     getLinks(path);
-    validateUrlStatus(path)
-      .then((response) => {
-        resolve(response)
-      })
-
+    resolve(validateUrlStatus(path));
   }
 
   /* if (options.validate) {
@@ -41,13 +37,15 @@ const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
     resolve(arrayPromises);
   } */
 });
-validateUrlStatus('Directory/DirPrueba/prueba.md').then((result) => {
-  console.log(result);
-})
-/* mdLinks('Directory/DirPrueba/prueba.md', { validate: true })
+
+mdLinks('Directory/DirPrueba/prueba.md', { validate: true })
   .then((res) => {
     console.log('res', res);
-    /* Promise.all(res).then((response) => {
+    Promise.all(res).then((response) => {
       console.log('aquiiiiiii', response.flat());
-    }); */
-  // });
+    });
+  });
+
+/* validateUrlStatus('Directory/DirPrueba/prueba.md').then((result) => {
+  console.log(result);
+}); */

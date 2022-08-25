@@ -75,8 +75,8 @@ describe('validateUrlStatus', () => {
       status: 200,
       message: 'OK',
     }];
-    axios.mockResolvedValueOnce({ status: 200, statusText: 'OK' });
-    validateUrlStatus('https://nodejs.org/')
+    axios.mockResolvedValue({ status: 200, statusText: 'OK' });
+    validateUrlStatus('Directory/DirPrueba/prueba2.md')
       .then((response) => {
         expect(response).toStrictEqual(link);
         done();

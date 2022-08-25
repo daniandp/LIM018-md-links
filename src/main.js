@@ -42,30 +42,30 @@ const getLinks = (file) => {
 };
 
 // FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
-const validateUrlStatus = (pathFile) => new Promise((resolve) => {
+const validateUrlStatus = (pathFile) => {
   const savedLinks = getLinks(pathFile);
   const arrayLinksPromises = [];
-  console.log(savedLinks.length);
   for (let i = 0; i < savedLinks.length; i += 1) {
+    console.log('HOLAAA', savedLinks);
     const validateLinks = axios.get(savedLinks[i].href)
       .then((response) => {
-       /*  console.log('aqui estamos'); */
+        /*  console.log('aqui estamos'); */
         savedLinks[i].status = response.status;
         savedLinks[i].message = response.statusText;
-        return savedLinks;
+        return savedLinks[i];
       })
       .catch(() => {
-       /*  console.log('en el catch'); */
+        /*  console.log('en el catch'); */
         savedLinks[i].status = 'ERROR';
         savedLinks[i].message = 'FAIL';
-        return savedLinks;
+        return savedLinks[i];
       });
     arrayLinksPromises.push(validateLinks);
     /* console.log('array de links', arrayLinksPromises); */
   }
-  resolve(Promise.all(arrayLinksPromises));
+  return arrayLinksPromises;
   // resolve(arrayLinksPromises);
-});
+};
 
 /* const validateUrlStatus = (arrayOfLinks) => {
   const linkStatus = arrayOfLinks.map((links) => axios.get(links.href)
