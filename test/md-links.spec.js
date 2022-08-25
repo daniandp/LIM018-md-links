@@ -1,10 +1,13 @@
+const axios = require('axios');
+
+jest.mock('axios', () => jest.fn());
 const {
   routeExists, routeAbsolute, mdFileExtension, isADirectory,
-  isAFile, readDirectory, readFile, getLinks,
+  isAFile, readDirectory, readFile, getLinks, validateUrlStatus,
 } = require('../src/main');
 
 describe('routeExists', () => {
-  it('Valida que la ruta proporcionada exista', () => {
+  it('Si la ruta proporcionada existe, debe retornar true', () => {
     expect(routeExists('Directory/DirPrueba/prueba.md')).toBe(true);
     expect(routeExists('Directory/DirPrueba/prueba.')).toBe(false);
   });
@@ -24,16 +27,29 @@ describe('mdFileExtension', () => {
   });
 });
 
-/* describe('isADirectory', () => {
-  it('', () => {
-    const pathAbsolute = 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\prueba.md';
-    expect(routeAbsolute(pathAbsolute)).toBe(pathAbsolute);
-    expect(routeAbsolute('prueba.md')).toBe(pathAbsolute);
+describe('isADirectory', () => {
+  it('Si la ruta corresponde a un directorio, debe retortar true, si es un archivo retorna false', () => {
+    expect(isADirectory('Directory')).toBe(true);
+    expect(isADirectory('Directory/DirPrueba/prueba.md')).toBe(false);
   });
-}); */
+});
+
+describe('isAFile', () => {
+  it('Si la ruta corresponde a un archivo, debe retortar true, si es un directorio retorna false', () => {
+    expect(isAFile('Directory/DirPrueba/prueba.md')).toBe(true);
+    expect(isAFile('D:/Casa/Google Drive/Daniela Andrade/LABORATORIA/LIM018-md-links/Directory')).toBe(false);
+  });
+});
+
+describe('readDirectory', () => {
+  it('Lee el directorio y retorna un array con los archivos que tiene dentro', () => {
+    const directoryContent = ['archivo.md', 'DirPrueba'];
+    expect(readDirectory('Directory')).toEqual(directoryContent);
+  });
+});
 
 describe('readFile', () => {
-  it('Retorna el contenido del archivo markdown y lo muestra en la terminal', () => {
+  it('Lee el archivo y retorna una cadena con el contenido del archivo markdown', () => {
     const fileContent = 'Hola mundo 2 [Node.js](https://nodejs.org/)';
     expect(readFile('Directory/DirPrueba/prueba2.md')).toBe(fileContent);
   });
@@ -41,12 +57,30 @@ describe('readFile', () => {
 
 describe('getLinks', () => {
   it('Retorna un array con un objeto por cada link encontrado, con las propiedades href, text y file', () => {
-    const arrayOfLinks = [{
+    const link = [{
       href: 'https://nodejs.org/',
       text: 'Node.js',
       file: 'Directory/DirPrueba/prueba2.md',
     }];
-    expect(getLinks('Directory/DirPrueba/prueba2.md')).toStrictEqual(arrayOfLinks);
+    expect(getLinks('Directory/DirPrueba/prueba2.md')).toStrictEqual(link);
+  });
+});
+
+describe('validateUrlStatus', () => {
+  it.only('Hace la consulta HTTP de cada link y retorna el status y el message de cada uno como propiedades dentro del objeto de cada link', (done) => {
+    const link = [{
+      href: 'https://nodejs.org/',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba2.md',
+      status: 200,
+      message: 'OK',
+    }];
+    axios.mockResolvedValueOnce({ status: 200, statusText: 'OK' });
+    validateUrlStatus('https://nodejs.org/')
+      .then((response) => {
+        expect(response).toStrictEqual(link);
+        done();
+      });
   });
 });
 

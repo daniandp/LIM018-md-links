@@ -11,6 +11,11 @@ const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
   }
 
   if (options.validate) {
+    getLinks(path);
+    resolve(validateUrlStatus(path));
+  }
+
+  /* if (options.validate) {
     const linksSaved = getLinks(path);
     const arrayPromises = [];
     for (let i = 0; i < linksSaved.length; i += 1) {
@@ -30,12 +35,12 @@ const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
       // console.log(validateUrlStatus(prueba[i]));
     }
     resolve(arrayPromises);
-  }
+  } */
 });
 
 mdLinks('Directory/DirPrueba/prueba.md', { validate: true })
   .then((res) => {
     Promise.all(res).then((response) => {
-      console.log(response);
+      console.log('aquiiiiiii', response.flat());
     });
   });
