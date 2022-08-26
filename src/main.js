@@ -63,6 +63,20 @@ const validateUrlStatus = (pathFile) => {
   return arrayLinksPromises;
 };
 
+// FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS EN ÉL
+const findFilesInDir = (pathDir) => {
+  const arrayAllFiles = [];
+  if (isAFile(pathDir)) {
+    return [pathDir];
+  }
+  const readDir = readDirectory(pathDir);
+  readDir.forEach((file) => {
+    const fullPath = path.join(pathDir, file);
+    arrayAllFiles.push(findFilesInDir(fullPath));
+  });
+  return arrayAllFiles.flat();
+};
+
 /* const validateUrlStatus = (arrayOfLinks) => {
   const linkStatus = arrayOfLinks.map((links) => axios.get(links.href)
     .then((response) => ({

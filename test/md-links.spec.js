@@ -2,7 +2,7 @@ jest.mock('axios');
 
 const {
   routeExists, routeAbsolute, mdFileExtension, isADirectory,
-  isAFile, readDirectory, readFile, getLinks, validateUrlStatus,
+  isAFile, readDirectory, readFile, getLinks, validateUrlStatus, findFilesInDir,
 } = require('../src/main');
 
 describe('routeExists', () => {
@@ -66,7 +66,7 @@ describe('getLinks', () => {
 });
 
 describe('validateUrlStatus', () => {
-  it.only('Hace la consulta HTTP de cada link y retorna el status y el message de cada uno como propiedades dentro del objeto de cada link', (done) => {
+  it('Hace la consulta HTTP de cada link y retorna status >=200 y <=399 y el message OK de cada uno como propiedades dentro del objeto de cada link', (done) => {
     const responseLink = [{
       href: 'https://nodejs.org/',
       text: 'Node.js',
@@ -79,6 +79,32 @@ describe('validateUrlStatus', () => {
       expect(response).toStrictEqual(responseLink);
       done();
     });
+  });
+
+  it('Hace la consulta HTTP de cada link y retorna status Error y message FAIL de cada uno como propiedades dentro del objeto de cada link', (done) => {
+    const responseLink = [{
+      href: 'https://nodejs.org/',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba2.md',
+      status: 'Error',
+      message: 'FAIL',
+    }];
+    const arrayLinksPromises = validateUrlStatus('Directory/DirPrueba/prueba2.md');
+    Promise.all(arrayLinksPromises).then((response) => {
+      expect(response).toStrictEqual(responseLink);
+      done();
+    });
+  });
+});
+
+describe('findFilesInDir', () => {
+  it('Lee un directorio y retorna un array de con las rutas de los documentos que se encuentran dentro del directorio', () => {
+    const arrayDirPaths = [
+      'Directory\\archivo.md',
+      'Directory\\DirPrueba\\prueba.md',
+      'Directory\\DirPrueba\\prueba.txt',
+      'Directory\\DirPrueba\\prueba2.md'];
+    expect(findFilesInDir('Directory')).toStrictEqual(arrayDirPaths);
   });
 });
 

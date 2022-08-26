@@ -9,8 +9,8 @@ axios.get = jest.fn(() => Promise.resolve({
 }));
 
 axios.get = jest.fn(() => Promise.resolve({
-  status: 404,
-  statusText: 'fail',
+  status: 'Error',
+  statusText: 'FAIL',
 }));
 
 module.exports = axios;
