@@ -1,6 +1,5 @@
-const axios = require('axios');
+jest.mock('axios');
 
-jest.mock('axios', () => jest.fn());
 const {
   routeExists, routeAbsolute, mdFileExtension, isADirectory,
   isAFile, readDirectory, readFile, getLinks, validateUrlStatus,
@@ -56,7 +55,7 @@ describe('readFile', () => {
 });
 
 describe('getLinks', () => {
-  it('Retorna un array con un objeto por cada link encontrado, con las propiedades href, text y file', () => {
+  it('Retorna un array de objetos, un objeto por cada link encontrado, con las propiedades href, text y file', () => {
     const link = [{
       href: 'https://nodejs.org/',
       text: 'Node.js',
@@ -68,19 +67,18 @@ describe('getLinks', () => {
 
 describe('validateUrlStatus', () => {
   it.only('Hace la consulta HTTP de cada link y retorna el status y el message de cada uno como propiedades dentro del objeto de cada link', (done) => {
-    const link = [{
+    const responseLink = [{
       href: 'https://nodejs.org/',
       text: 'Node.js',
       file: 'Directory/DirPrueba/prueba2.md',
       status: 200,
       message: 'OK',
     }];
-    axios.mockResolvedValue({ status: 200, statusText: 'OK' });
-    validateUrlStatus('Directory/DirPrueba/prueba2.md')
-      .then((response) => {
-        expect(response).toStrictEqual(link);
-        done();
-      });
+    const arrayLinksPromises = validateUrlStatus('Directory/DirPrueba/prueba2.md');
+    Promise.all(arrayLinksPromises).then((response) => {
+      expect(response).toStrictEqual(responseLink);
+      done();
+    });
   });
 });
 

@@ -38,7 +38,8 @@ const getLinks = (file) => {
     };
     return arrayOfLinks.push(objOfLinks);
   });
-  return arrayOfLinks;
+  const filteredLinks = arrayOfLinks.filter((url) => url.href.startsWith('http'));
+  return filteredLinks;
 };
 
 // FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
@@ -46,25 +47,20 @@ const validateUrlStatus = (pathFile) => {
   const savedLinks = getLinks(pathFile);
   const arrayLinksPromises = [];
   for (let i = 0; i < savedLinks.length; i += 1) {
-    console.log('HOLAAA', savedLinks);
     const validateLinks = axios.get(savedLinks[i].href)
       .then((response) => {
-        /*  console.log('aqui estamos'); */
         savedLinks[i].status = response.status;
-        savedLinks[i].message = response.statusText;
+        savedLinks[i].message = (response.status >= 200) && (response.status <= 399) ? response.statusText : 'FAIL';
         return savedLinks[i];
       })
-      .catch(() => {
-        /*  console.log('en el catch'); */
-        savedLinks[i].status = 'ERROR';
+      .catch((error) => {
+        savedLinks[i].status = `${error}`;
         savedLinks[i].message = 'FAIL';
         return savedLinks[i];
       });
     arrayLinksPromises.push(validateLinks);
-    /* console.log('array de links', arrayLinksPromises); */
   }
   return arrayLinksPromises;
-  // resolve(arrayLinksPromises);
 };
 
 /* const validateUrlStatus = (arrayOfLinks) => {
@@ -95,6 +91,7 @@ module.exports = {
   readFile,
   getLinks,
   validateUrlStatus,
+  findFilesInDir,
 };
 
 // regex diana = /\[([^\[]+)\](\(.*\))/gm;

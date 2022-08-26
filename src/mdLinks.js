@@ -38,13 +38,13 @@ const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
   } */
 });
 
-mdLinks('Directory/DirPrueba/prueba.md', { validate: true })
+/* mdLinks('README.md', { validate: true })
   .then((res) => {
     console.log('res', res);
     Promise.all(res).then((response) => {
       console.log('aquiiiiiii', response.flat());
     });
-  });
+  }); */
 
 /* validateUrlStatus('Directory/DirPrueba/prueba.md').then((result) => {
   console.log(result);
