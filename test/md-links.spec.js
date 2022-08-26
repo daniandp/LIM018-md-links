@@ -98,7 +98,7 @@ describe('validateUrlStatus', () => {
 });
 
 describe('findFilesInDir', () => {
-  it('Lee un directorio y retorna un array de con las rutas de los documentos que se encuentran dentro del directorio', () => {
+  it('Lee un directorio y retorna un array con las rutas de los documentos que se encuentran dentro del directorio', () => {
     const arrayDirPaths = [
       'Directory\\archivo.md',
       'Directory\\DirPrueba\\prueba.md',
