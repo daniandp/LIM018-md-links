@@ -21,23 +21,28 @@ const isADirectory = (pathFile) => fs.statSync(pathFile).isDirectory();
 const readDirectory = (pathFile) => fs.readdirSync(pathFile);
 
 // FUNCIÓN PARA LEER EL ARCHIVO
-const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
+// const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
 
 // FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
 const getLinks = (file) => {
   const arrayOfLinks = [];
-  const readingFiles = readFile(file, 'utf-8');
+  const readingFiles = fs.readFileSync(file, 'utf-8');
   const regExp = /\[(.*?)\]\(.*?\)/gm;
   const urlsFound = readingFiles.match(regExp);
-  urlsFound.map((url) => {
-    const text = url.slice(1, url.indexOf(']'));
-    const objOfLinks = {
-      href: url.slice(url.indexOf(']') + 2, url.length - 1), // URL encontrada
-      text, // texto qe aparecía dentro del link
-      file, // ruta del archivo donde se encontró el link entre []
-    };
-    return arrayOfLinks.push(objOfLinks);
-  });
+
+  if (urlsFound != null) {
+    urlsFound.map((url) => {
+      const text = url.slice(1, url.indexOf(']'));
+      const objOfLinks = {
+        href: url.slice(url.indexOf(']') + 2, url.length - 1), // URL encontrada
+        text, // texto qe aparecía dentro del link
+        file, // ruta del archivo donde se encontró el link entre []
+      };
+
+      return arrayOfLinks.push(objOfLinks);
+    });
+  }
+
   const filteredLinks = arrayOfLinks.filter((url) => url.href.startsWith('http'));
   return filteredLinks;
 };
@@ -65,7 +70,7 @@ const validateUrlStatus = (urls) => {
       });
     arrayLinksPromises.push(validateLinks);
   }
-  return Promise.all(arrayLinksPromises); // retoruna un array de objetos con una promesa cada uno
+  return Promise.all(arrayLinksPromises); // retorna un array de objetos con una promesa cada uno
 };
 
 // FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS EN ÉL
@@ -87,9 +92,9 @@ const findFilesInDir = (pathDir) => {
       arrayAllFiles = arrayAllFiles.concat(readDirAgain);
     } else if (mdFileExtension(fullPath) === '.md') {
       arrayAllFiles.push(fullPath);
-      console.log('queees esto', arrayAllFiles);
     }
   });
+  console.log('queees esto', arrayAllFiles);
   return arrayAllFiles; // retorna un array de rutas de los archivos que están dentro del directorio
 };
 
@@ -112,7 +117,7 @@ module.exports = {
   isADirectory,
   /*  isAFile, */
   readDirectory,
-  readFile,
+ /*  readFile, */
   getLinks,
   validateUrlStatus,
   findFilesInDir,

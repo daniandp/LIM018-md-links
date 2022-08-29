@@ -56,12 +56,12 @@ describe('readDirectory', () => {
   });
 });
 
-describe('readFile', () => {
+/* describe('readFile', () => {
   it('Lee el archivo y retorna una cadena con el contenido del archivo markdown', () => {
     const fileContent = 'Hola mundo 2 [Node.js](https://nodejs.org/)';
     expect(readFile('Directory/DirPrueba/prueba2.md')).toBe(fileContent);
   });
-});
+}); */
 
 describe('getLinks', () => {
   it('Retorna un array de objetos, un objeto por cada link encontrado, con las propiedades href, text y file', () => {

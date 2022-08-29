@@ -19,6 +19,11 @@
     "pretest_": "npm run eslint",
     "test": "jest --coverage"
   },
+
+  "bin": {
+    "md-links": "./src/cli.js"
+  },
+
   "devDependencies": {
     "eslint": "^8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",
