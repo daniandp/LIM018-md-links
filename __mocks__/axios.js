@@ -8,9 +8,11 @@ axios.get = jest.fn(() => Promise.resolve({
   statusText: 'OK',
 }));
 
-axios.get = jest.fn(() => Promise.resolve({
-  status: 'Error',
-  statusText: 'FAIL',
-}));
+/* axios.get = jest.fn(() => Promise.reject(new Error(
+  {
+    status: 400,
+    statusText: 'FAIL',
+  },
+))); */
 
 module.exports = axios;

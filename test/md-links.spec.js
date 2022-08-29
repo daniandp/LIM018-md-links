@@ -1,9 +1,18 @@
-jest.mock('axios');
-
 const {
-  routeExists, routeAbsolute, mdFileExtension, isADirectory,
-  isAFile, readDirectory, readFile, getLinks, validateUrlStatus, findFilesInDir,
+  routeExists,
+  routeAbsolute,
+  mdFileExtension,
+  isADirectory,
+  /*  isAFile, */
+  readDirectory,
+  readFile,
+  getLinks,
+  validateUrlStatus,
+  findFilesInDir,
+  statsOfUrls,
 } = require('../src/main');
+
+jest.mock('axios');
 
 describe('routeExists', () => {
   it('Si la ruta proporcionada existe, debe retornar true', () => {
@@ -33,12 +42,12 @@ describe('isADirectory', () => {
   });
 });
 
-describe('isAFile', () => {
+/* describe('isAFile', () => {
   it('Si la ruta corresponde a un archivo, debe retortar true, si es un directorio retorna false', () => {
     expect(isAFile('Directory/DirPrueba/prueba.md')).toBe(true);
     expect(isAFile('D:/Casa/Google Drive/Daniela Andrade/LABORATORIA/LIM018-md-links/Directory')).toBe(false);
   });
-});
+}); */
 
 describe('readDirectory', () => {
   it('Lee el directorio y retorna un array con los archivos que tiene dentro', () => {
@@ -66,7 +75,7 @@ describe('getLinks', () => {
 });
 
 describe('validateUrlStatus', () => {
-  it('Hace la consulta HTTP de cada link y retorna status >=200 y <=399 y el message OK de cada uno como propiedades dentro del objeto de cada link', (done) => {
+  it('Hace la consulta HTTP de cada link y retorna status 200 y el message OK de cada uno como propiedades dentro del objeto de cada link', (done) => {
     const responseLink = [{
       href: 'https://nodejs.org/',
       text: 'Node.js',
@@ -75,25 +84,31 @@ describe('validateUrlStatus', () => {
       message: 'OK',
     }];
     const arrayLinksPromises = validateUrlStatus('Directory/DirPrueba/prueba2.md');
-    Promise.all(arrayLinksPromises).then((response) => {
-      expect(response).toStrictEqual(responseLink);
-      done();
-    });
+    Promise.all(arrayLinksPromises)
+      .then((response) => {
+        expect(response).toStrictEqual(responseLink);
+        done();
+      });
   });
-
-  it('Hace la consulta HTTP de cada link y retorna status Error y message FAIL de cada uno como propiedades dentro del objeto de cada link', (done) => {
-    const responseLink = [{
-      href: 'https://nodejs.org/',
+  it('Hace la consulta HTTP de cada link y retorna status 404 y el message FAIL de cada uno como propiedades dentro del objeto de cada link', (done) => {
+    const arrayTest = [{
+      href: 'https://nodejs.org/e',
       text: 'Node.js',
       file: 'Directory/DirPrueba/prueba2.md',
-      status: 'Error',
+    }];
+    const responseLink = [{
+      href: 'https://nodejs.org/e',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba2.md',
+      status: 404,
       message: 'FAIL',
     }];
-    const arrayLinksPromises = validateUrlStatus('Directory/DirPrueba/prueba2.md');
-    Promise.all(arrayLinksPromises).then((response) => {
-      expect(response).toStrictEqual(responseLink);
-      done();
-    });
+    const arrayLinksPromises = validateUrlStatus(arrayTest);
+    Promise.all(arrayLinksPromises)
+      .catch((error) => {
+        expect(error).toStrictEqual(responseLink);
+        done();
+      });
   });
 });
 
@@ -105,6 +120,22 @@ describe('findFilesInDir', () => {
       'Directory\\DirPrueba\\prueba.txt',
       'Directory\\DirPrueba\\prueba2.md'];
     expect(findFilesInDir('Directory')).toStrictEqual(arrayDirPaths);
+  });
+});
+
+describe('statsOfUrls,', () => {
+  it('Si el usuario escoge la opción --stats, retorna un objeto con la cantidad de links totales y únicos', () => {
+    const arrayTest = [{
+      href: 'https://nodejs.org/e',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba2.md',
+    }];
+
+    const objectTest = {
+      total: 1,
+      unique: 1,
+    };
+    expect(statsOfUrls(arrayTest)).toStrictEqual(objectTest);
   });
 });
 

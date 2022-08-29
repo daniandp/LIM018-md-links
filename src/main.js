@@ -12,10 +12,10 @@ const routeAbsolute = (pathFile) => (path.isAbsolute(pathFile) ? pathFile : path
 const mdFileExtension = (pathFile) => path.extname(pathFile);
 
 // FUNCIÓN PARA VALIDAR SI ES UN DIRECTORIO
-const isADirectory = (pathFile) => fs.lstatSync(pathFile).isDirectory();
+const isADirectory = (pathFile) => fs.statSync(pathFile).isDirectory();
 
 // FUNCIÓN PARA VALIDAR SI ES UN ARCHIVO
-const isAFile = (pathFile) => fs.lstatSync(pathFile).isFile();
+/* const isAFile = (pathFile) => fs.lstatSync(pathFile).isFile(); */
 
 // FUNCIÓN PARA LEER EL DIRECTORIO
 const readDirectory = (pathFile) => fs.readdirSync(pathFile);
@@ -43,38 +43,54 @@ const getLinks = (file) => {
 };
 
 // FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
-const validateUrlStatus = (pathFile) => {
-  const savedLinks = getLinks(pathFile);
+const validateUrlStatus = (urls) => {
+  const savedLinks = getLinks(urls);
   const arrayLinksPromises = [];
   for (let i = 0; i < savedLinks.length; i += 1) {
     const validateLinks = axios.get(savedLinks[i].href)
       .then((response) => {
         savedLinks[i].status = response.status;
-        savedLinks[i].message = (response.status >= 200) && (response.status <= 399) ? response.statusText : 'FAIL';
+        savedLinks[i].message = response.statusText;
         return savedLinks[i];
       })
       .catch((error) => {
-        savedLinks[i].status = `${error}`;
-        savedLinks[i].message = 'FAIL';
+        if (error.response) {
+          savedLinks[i].status = error.response.status;
+          savedLinks[i].message = 'FAIL';
+        } else {
+          savedLinks[i].status = error.errno;
+          savedLinks[i].message = 'FAIL';
+        }
         return savedLinks[i];
       });
     arrayLinksPromises.push(validateLinks);
   }
-  return arrayLinksPromises;
+  return arrayLinksPromises; // retoruna un array de objetos con una promesa cada uno
 };
 
 // FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS EN ÉL
 const findFilesInDir = (pathDir) => {
   const arrayAllFiles = [];
-  if (isAFile(pathDir)) {
-    return [pathDir];
+  if (!isADirectory(pathDir)) {
+    return [pathDir]; // si no es un directorio(false), retorna solo la ruta del archivo
   }
+  // leyendo el directorio para encontrar archivos
   const readDir = readDirectory(pathDir);
   readDir.forEach((file) => {
     const fullPath = path.join(pathDir, file);
     arrayAllFiles.push(findFilesInDir(fullPath));
   });
-  return arrayAllFiles.flat();
+  return arrayAllFiles.flat(); // retorna un array de rutas de los archivos que están dentro del directorio
+};
+
+// FUNCIÓN PARA OBTENER ESTADÍSTICAS DE LOS URLS
+const statsOfUrls = (objectOfLinks) => {
+  const uniqueUrls = new Set(objectOfLinks);
+  const arrayUniqueUrls = [...uniqueUrls];
+  return {
+    total: objectOfLinks.length,
+    unique: arrayUniqueUrls.length,
+  };
 };
 
 /* const validateUrlStatus = (arrayOfLinks) => {
@@ -100,12 +116,13 @@ module.exports = {
   routeAbsolute,
   mdFileExtension,
   isADirectory,
-  isAFile,
+  /*  isAFile, */
   readDirectory,
   readFile,
   getLinks,
   validateUrlStatus,
   findFilesInDir,
+  statsOfUrls,
 };
 
 // regex diana = /\[([^\[]+)\](\(.*\))/gm;

@@ -1,51 +1,51 @@
 const {
-  routeExists, routeAbsolute, mdFileExtension, readFile, getLinks, validateUrlStatus,
+  routeExists, routeAbsolute, mdFileExtension, isADirectory, readFile, getLinks, validateUrlStatus, findFilesInDir,
 } = require('./main');
 
 const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
+  const arrayAllFiles = [];
+  // comprueba si la ruta existe, si existe, comprueba si es absoluta o relativa(la convierte a absoluta)
   if (routeExists(path)) {
-    routeAbsolute(path);
-  }
-  if (mdFileExtension(path) === '.md') {
-    (readFile(path));
-  }
-
-  if (options.validate) {
-    getLinks(path);
-    resolve(validateUrlStatus(path));
-  }
-
-  /* if (options.validate) {
-    const linksSaved = getLinks(path);
-    const arrayPromises = [];
-    for (let i = 0; i < linksSaved.length; i += 1) {
-      const validateLinks = validateUrlStatus(linksSaved[i].href)
-        .then((response) => {
-          linksSaved[i].status = response.status;
-          linksSaved[i].message = response.statusText;
-          // console.log('dos', linksSaved[i]);
-          return linksSaved[i];
-        })
-        .catch(() => {
-          linksSaved[i].status = 'ERROR';
-          linksSaved[i].message = 'FAIL';
-          return linksSaved[i];
-        });
-      arrayPromises.push(validateLinks);
-      // console.log(validateUrlStatus(prueba[i]));
+    const pathAbsolute = routeAbsolute(path);
+    if (isADirectory(pathAbsolute)) { // si es un directorio se hace la función recursiva para encontrar archivos dentro
+      const arrayFilesInDir = findFilesInDir(pathAbsolute); // función recursiva, array de rutas encontradas dentro del directorio
+      arrayFilesInDir.forEach((pathFile) => {
+        if (mdFileExtension(pathFile === '.md')) {
+          arrayAllFiles.push(pathFile);
+        }
+        return arrayAllFiles;
+      });
+      const arrayAllLinks = [];
+      arrayAllFiles.forEach((pathFile) => {
+        const fileCont = readFile(pathFile);
+        const arrayLinks = getLinks(fileCont);
+        if (options.validate) {
+          arrayAllLinks.push(validateUrlStatus(arrayLinks));
+        }
+        return arrayAllLinks;
+      });
     }
-    resolve(arrayPromises);
-  } */
+  }
 });
+/*
+    if (mdFileExtension(path) === '.md') {
+      (readFile(path));
+    }
 
-/* mdLinks('README.md', { validate: true })
+    if (options.validate) {
+      getLinks(path);
+      resolve(validateUrlStatus(path));
+    } */
+
+mdLinks('Directory', { validate: true })
   .then((res) => {
-    console.log('res', res);
     Promise.all(res).then((response) => {
       console.log('aquiiiiiii', response.flat());
     });
-  }); */
-
+  })
+  .catch((error) => {
+    console.log('este es el erroooooor =>', error);
+  });
 /* validateUrlStatus('Directory/DirPrueba/prueba.md').then((result) => {
   console.log(result);
 }); */
