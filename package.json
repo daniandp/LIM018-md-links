@@ -1,6 +1,15 @@
 {
-  "name": "md-links",
+  "name": "md-links-daniandp",
   "version": "0.1.0",
+  "description": "libreria para comporbar el estado de los links en documentos markdown",
+  "keywords": [
+    "javascript", 
+    "nodejs"
+  ],
+  "author": {
+    "name": "Daniela Andrade", 
+    "url": "https://github.com/daniandp"
+  },
   "engines": {
     "node": ">=16.x"
   },

@@ -10,42 +10,43 @@ const mdLinks = (path, options) => new Promise((resolve/* , reject */) => {
     if (isADirectory(pathAbsolute)) { // si es un directorio se hace la función recursiva para encontrar archivos dentro
       const arrayFilesInDir = findFilesInDir(pathAbsolute); // función recursiva, array de rutas encontradas dentro del directorio
       arrayFilesInDir.forEach((pathFile) => {
-        if (mdFileExtension(pathFile === '.md')) {
+        if (mdFileExtension(pathFile) === '.md') {
           arrayAllFiles.push(pathFile);
         }
-        return arrayAllFiles;
       });
-      const arrayAllLinks = [];
+      console.log('otro console', arrayAllFiles);
       arrayAllFiles.forEach((pathFile) => {
         const fileCont = readFile(pathFile);
+        console.log('contenido del archivo =>>', fileCont);
         const arrayLinks = getLinks(fileCont);
-        if (options.validate) {
-          arrayAllLinks.push(validateUrlStatus(arrayLinks));
-        }
-        return arrayAllLinks;
+        console.log('??????????? =>', arrayLinks);
+        resolve(arrayLinks);
+        /*  if (options.validate) {
+          validateUrlStatus(arrayLinks)
+            .then((res) => {
+              resolve(res);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } */
       });
+      /* Promise.all(arrayAllFiles)
+        .then((res) => {
+          resolve(res);
+        }); */
     }
   }
 });
-/*
-    if (mdFileExtension(path) === '.md') {
-      (readFile(path));
-    }
 
-    if (options.validate) {
-      getLinks(path);
-      resolve(validateUrlStatus(path));
-    } */
-
-mdLinks('Directory', { validate: true })
-  .then((res) => {
-    Promise.all(res).then((response) => {
-      console.log('aquiiiiiii', response.flat());
-    });
+mdLinks('Directory/DirPrueba', { validate: true })
+  .then((response) => {
+    console.log('estoy acaa', response);
   })
   .catch((error) => {
     console.log('este es el erroooooor =>', error);
   });
+
 /* validateUrlStatus('Directory/DirPrueba/prueba.md').then((result) => {
   console.log(result);
 }); */

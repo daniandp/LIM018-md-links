@@ -65,23 +65,35 @@ const validateUrlStatus = (urls) => {
       });
     arrayLinksPromises.push(validateLinks);
   }
-  return arrayLinksPromises; // retoruna un array de objetos con una promesa cada uno
+  return Promise.all(arrayLinksPromises); // retoruna un array de objetos con una promesa cada uno
 };
 
 // FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS EN ÉL
 const findFilesInDir = (pathDir) => {
-  const arrayAllFiles = [];
-  if (!isADirectory(pathDir)) {
+  // console.log('rutas de los directorios =>', pathDir);
+  let arrayAllFiles = [];
+  /* if (!isADirectory(pathDir)) {
     return [pathDir]; // si no es un directorio(false), retorna solo la ruta del archivo
-  }
+  } */
   // leyendo el directorio para encontrar archivos
-  const readDir = readDirectory(pathDir);
-  readDir.forEach((file) => {
+  const listOfFiles = readDirectory(pathDir);
+  // console.log('eoooooooo', readDir);
+  listOfFiles.forEach((file) => {
+    // console.log('????', listOfFiles);
     const fullPath = path.join(pathDir, file);
-    arrayAllFiles.push(findFilesInDir(fullPath));
+    if (isADirectory(fullPath)) {
+      const readDirAgain = findFilesInDir(fullPath);
+      // console.log('aqui', readDirAgain);
+      arrayAllFiles = arrayAllFiles.concat(readDirAgain);
+    } else if (mdFileExtension(fullPath) === '.md') {
+      arrayAllFiles.push(fullPath);
+      console.log('queees esto', arrayAllFiles);
+    }
   });
-  return arrayAllFiles.flat(); // retorna un array de rutas de los archivos que están dentro del directorio
+  return arrayAllFiles; // retorna un array de rutas de los archivos que están dentro del directorio
 };
+
+// console.log(findFilesInDir('Directory'));
 
 // FUNCIÓN PARA OBTENER ESTADÍSTICAS DE LOS URLS
 const statsOfUrls = (objectOfLinks) => {
@@ -92,24 +104,6 @@ const statsOfUrls = (objectOfLinks) => {
     unique: arrayUniqueUrls.length,
   };
 };
-
-/* const validateUrlStatus = (arrayOfLinks) => {
-  const linkStatus = arrayOfLinks.map((links) => axios.get(links.href)
-    .then((response) => ({
-      status: response.status,
-      statusText: response.statusText,
-    }))
-    .catch(() => ({
-      status: 'ERROR',
-      statusText: 'FAIL',
-    })));
-  return Promise.all(linkStatus);
-}; */
-
-// console.log(getLinks('prueba.md'));
-/* validateUrlStatus('https://nodejs.org/').then((response) => {
-  console.log(response.status, response.statusText);
-}); */
 
 module.exports = {
   routeExists,
