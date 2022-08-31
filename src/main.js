@@ -69,7 +69,7 @@ const validateUrlStatus = (arrayOfLinks) => {
       });
     arrayLinksPromises.push(validateLinks);
   }
-  return Promise.allSettled(arrayLinksPromises); // retorna todas las promesas, un array de objetos con una promesa por cada link
+  return Promise.all(arrayLinksPromises); // retorna todas las promesas, un array de objetos con una promesa por cada link
 };
 
 // FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS MARKDOWN EN ÉL
@@ -103,12 +103,6 @@ const statsOfUrls = (arrayOfLinks) => {
     unique,
   };
 };
-
-console.log(statsOfUrls([{
-  href: 'https://nodejs.org/',
-  text: 'Node.js',
-  file: 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\Directory\\DirPrueba\\prueba2.md',
-}]));
 
 module.exports = {
   routeExists,

@@ -4,7 +4,8 @@ const {
 
 const mdLinks = (path, options) => new Promise((resolve, reject) => {
   const arrayAllFiles = [];
-  const arrayAllLinks = [];
+  // const arrayAllLinks = [];
+  // const arrayAllPromises = [];
   // comprueba si la ruta existe, si existe, comprueba si es absoluta o relativa(la convierte a absoluta)
   if (routeExists(path)) {
     const pathAbsolute = routeAbsolute(path);
@@ -18,34 +19,40 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
           console.log('No hay archivos markdown en el directorio');
         }
       });
-
+        // console.log('ARRAY ALL FILES', arrayAllFiles);
       arrayAllFiles.forEach((pathFile) => {
         // const fileCont = readFile(pathFile);
-        // console.log('contenido del archivo =>>', fileCont);
         const arrayLinks = getLinks(pathFile);
-        arrayAllLinks.push(arrayLinks);
+        // console.log('ARRAY LINKS', arrayLinks);
+        // arrayAllLinks.push(arrayLinks);
         // console.log('ARRAY ALL LINKS ---', arrayAllLinks.flat());
-        if (arrayAllLinks !== []) {
+        if (arrayLinks !== []) {
           if (options.validate) {
-            validateUrlStatus(arrayAllLinks.flat())
+            console.log('ARRAY LINKS', arrayLinks);
+            validateUrlStatus(arrayLinks)
               .then((res) => {
                 // console.log('ARRAY ALL LINKS ------', arrayAllLinks.flat());
-                resolve(res);
+                return (res);
                 console.log('RESPUESTA', res.flat());
               })
               .catch((error) => {
                 console.log(error);
               });
+            // resolve(arrayAllPromises);
+            // resolve(arrayAllLinks);
           }
         } else {
           console.log('No se encontraron links dentro de la ruta ingresada');
         }
-      });
-      // resolve(arrayAllLinks.flat());
-      /* Promise.allSettled(arrayAllLinks.flat())
+      })
         .then((res) => {
           resolve(res);
-          console.log('QUESSSSESTOOOOOOO', res);
+        });
+      // resolve(arrayAllLinks.flat());
+      /*  Promise.all(arrayAllPromises.flat())
+        .then((res) => {
+          resolve(res);
+          console.log('QUESSSSESTOOOOOOO', res.flat());
         }); */
     }
   } else {
@@ -53,13 +60,13 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   }
 });
 
-/* mdLinks('Directory', { validate: true })
+mdLinks('Directory', { validate: true })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })
   .catch((error) => {
     console.log('este es el error de la promesa mdlinks =>----', error);
-  }); */
+  });
 
 module.exports = {
   mdLinks,
