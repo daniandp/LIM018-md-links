@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-
+const process = require('node:process');
 const {
-  routeExists, routeAbsolute, mdFileExtension, isADirectory, readFile, getLinks, validateUrlStatus, findFilesInDir,
-} = require('./main');
-
-const {
-mdLinks
+  mdLinks
 } = require('./mdLinks');
 
-let enteredPath = process.argv[2];
+/* const {
+  routeExists, routeAbsolute, mdFileExtension, isADirectory, readFile, getLinks, validateUrlStatus, findFilesInDir,
+} = require('./main'); */
+
+const path = process.argv[2];
 const options = process.argv;
 
 console.log(options);

@@ -76,6 +76,11 @@ describe('getLinks', () => {
 
 describe('validateUrlStatus', () => {
   it('Hace la consulta HTTP de cada link y retorna status 200 y el message OK de cada uno como propiedades dentro del objeto de cada link', (done) => {
+    const arrayOfLinks = [{
+      href: 'https://nodejs.org/',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba2.md',
+    }];
     const responseLink = [{
       href: 'https://nodejs.org/',
       text: 'Node.js',
@@ -83,7 +88,8 @@ describe('validateUrlStatus', () => {
       status: 200,
       message: 'OK',
     }];
-    const arrayLinksPromises = validateUrlStatus('Directory/DirPrueba/prueba2.md');
+    const arrayLinksPromises = validateUrlStatus(arrayOfLinks);
+    console.log('????????????????????', arrayLinksPromises);
     Promise.all(arrayLinksPromises)
       .then((response) => {
         expect(response).toStrictEqual(responseLink);
@@ -113,13 +119,12 @@ describe('validateUrlStatus', () => {
 });
 
 describe('findFilesInDir', () => {
-  it('Lee un directorio y retorna un array con las rutas de los documentos que se encuentran dentro del directorio', () => {
-    const arrayDirPaths = [
+  it('Lee un directorio y retorna un array con las rutas de los documento markdown que se encuentran dentro del directorio', () => {
+    const arrayJustMdPaths = [
       'Directory\\archivo.md',
       'Directory\\DirPrueba\\prueba.md',
-      'Directory\\DirPrueba\\prueba.txt',
       'Directory\\DirPrueba\\prueba2.md'];
-    expect(findFilesInDir('Directory')).toStrictEqual(arrayDirPaths);
+    expect(findFilesInDir('Directory')).toStrictEqual(arrayJustMdPaths);
   });
 });
 

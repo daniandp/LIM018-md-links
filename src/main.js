@@ -24,32 +24,31 @@ const readDirectory = (pathFile) => fs.readdirSync(pathFile);
 // const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
 
 // FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
-const getLinks = (file) => {
+const getLinks = (pathFile) => {
   const arrayOfLinks = [];
-  const readingFiles = fs.readFileSync(file, 'utf-8');
+  const readingFiles = fs.readFileSync(pathFile, 'utf-8');
   const regExp = /\[(.*?)\]\(.*?\)/gm;
-  const urlsFound = readingFiles.match(regExp);
-
-  if (urlsFound != null) {
-    urlsFound.map((url) => {
-      const text = url.slice(1, url.indexOf(']'));
-      const objOfLinks = {
-        href: url.slice(url.indexOf(']') + 2, url.length - 1), // URL encontrada
-        text, // texto qe aparecía dentro del link
-        file, // ruta del archivo donde se encontró el link entre []
-      };
-
-      return arrayOfLinks.push(objOfLinks);
-    });
+  if (readingFiles !== '') {
+    const urlsFound = readingFiles.match(regExp);
+    if (urlsFound !== null) {
+      urlsFound.map((url) => {
+        const text = url.slice(1, url.indexOf(']'));
+        const objOfLinks = {
+          href: url.slice(url.indexOf(']') + 2, url.length - 1), // URL encontrada
+          text, // texto qe aparecía dentro del link
+          file: pathFile, // ruta del archivo donde se encontró el link entre []
+        };
+        return arrayOfLinks.push(objOfLinks);
+      });
+    }
   }
-
   const filteredLinks = arrayOfLinks.filter((url) => url.href.startsWith('http'));
-  return filteredLinks;
+  return filteredLinks; // retorna un array de objetos con los links que contenga el archivo
 };
 
 // FUNCIÓN PARA VALIDAR EL STATUS DE LOS LINKS CON PETICIONES HTTP
-const validateUrlStatus = (urls) => {
-  const savedLinks = getLinks(urls);
+const validateUrlStatus = (arrayOfLinks) => {
+  const savedLinks = arrayOfLinks; // array de objetos con los links del documento
   const arrayLinksPromises = [];
   for (let i = 0; i < savedLinks.length; i += 1) {
     const validateLinks = axios.get(savedLinks[i].href)
@@ -70,45 +69,46 @@ const validateUrlStatus = (urls) => {
       });
     arrayLinksPromises.push(validateLinks);
   }
-  return Promise.all(arrayLinksPromises); // retorna un array de objetos con una promesa cada uno
+  return Promise.allSettled(arrayLinksPromises); // retorna todas las promesas, un array de objetos con una promesa por cada link
 };
 
-// FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS EN ÉL
+// FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS MARKDOWN EN ÉL
 const findFilesInDir = (pathDir) => {
-  // console.log('rutas de los directorios =>', pathDir);
   let arrayAllFiles = [];
-  /* if (!isADirectory(pathDir)) {
+  /*  if (!isADirectory(pathDir)) {
     return [pathDir]; // si no es un directorio(false), retorna solo la ruta del archivo
   } */
   // leyendo el directorio para encontrar archivos
   const listOfFiles = readDirectory(pathDir);
-  // console.log('eoooooooo', readDir);
   listOfFiles.forEach((file) => {
-    // console.log('????', listOfFiles);
     const fullPath = path.join(pathDir, file);
     if (isADirectory(fullPath)) {
       const readDirAgain = findFilesInDir(fullPath);
-      // console.log('aqui', readDirAgain);
       arrayAllFiles = arrayAllFiles.concat(readDirAgain);
     } else if (mdFileExtension(fullPath) === '.md') {
       arrayAllFiles.push(fullPath);
     }
   });
-  console.log('queees esto', arrayAllFiles);
-  return arrayAllFiles; // retorna un array de rutas de los archivos que están dentro del directorio
+  return arrayAllFiles; // retorna un array con las rutas de los archivos markdown que están dentro del directorio
 };
 
 // console.log(findFilesInDir('Directory'));
 
 // FUNCIÓN PARA OBTENER ESTADÍSTICAS DE LOS URLS
-const statsOfUrls = (objectOfLinks) => {
-  const uniqueUrls = new Set(objectOfLinks);
-  const arrayUniqueUrls = [...uniqueUrls];
+const statsOfUrls = (arrayOfLinks) => {
+  const total = arrayOfLinks.length;
+  const unique = new Set(arrayOfLinks.map((url) => url.href)).size;
   return {
-    total: objectOfLinks.length,
-    unique: arrayUniqueUrls.length,
+    total,
+    unique,
   };
 };
+
+console.log(statsOfUrls([{
+  href: 'https://nodejs.org/',
+  text: 'Node.js',
+  file: 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\Directory\\DirPrueba\\prueba2.md',
+}]));
 
 module.exports = {
   routeExists,
@@ -117,7 +117,7 @@ module.exports = {
   isADirectory,
   /*  isAFile, */
   readDirectory,
- /*  readFile, */
+  /*  readFile, */
   getLinks,
   validateUrlStatus,
   findFilesInDir,
