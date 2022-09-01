@@ -95,12 +95,19 @@ const findFilesInDir = (pathDir) => {
 // console.log(findFilesInDir('Directory'));
 
 // FUNCIÓN PARA OBTENER ESTADÍSTICAS DE LOS URLS
-const statsOfUrls = (arrayOfLinks) => {
+const stats = (arrayOfLinks) => {
   const total = arrayOfLinks.length;
   const unique = new Set(arrayOfLinks.map((url) => url.href)).size;
   return {
-    total,
-    unique,
+    Total: total,
+    Unique: unique,
+  };
+};
+
+const statsBroken = (arrayOfLinks) => {
+  const broken = arrayOfLinks.filter((url) => url.message === 'FAIL').length;
+  return {
+    Broken: broken,
   };
 };
 
@@ -115,7 +122,8 @@ module.exports = {
   getLinks,
   validateUrlStatus,
   findFilesInDir,
-  statsOfUrls,
+  stats,
+  statsBroken,
 };
 
 // regex diana = /\[([^\[]+)\](\(.*\))/gm;

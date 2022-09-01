@@ -5,11 +5,12 @@ const {
   isADirectory,
   /*  isAFile, */
   readDirectory,
-  readFile,
+  /* readFile, */
   getLinks,
   validateUrlStatus,
   findFilesInDir,
-  statsOfUrls,
+  stats,
+  statsBroken,
 } = require('../src/main');
 
 jest.mock('axios');
@@ -88,9 +89,9 @@ describe('validateUrlStatus', () => {
       status: 200,
       message: 'OK',
     }];
-    const arrayLinksPromises = validateUrlStatus(arrayOfLinks);
-    console.log('????????????????????', arrayLinksPromises);
-    Promise.all(arrayLinksPromises)
+    const arrayAllPromises = validateUrlStatus(arrayOfLinks);
+    console.log('ARRAY LINKS PROMISE --', arrayAllPromises);
+    Promise.all(arrayAllPromises)
       .then((response) => {
         expect(response).toStrictEqual(responseLink);
         done();
@@ -128,19 +129,36 @@ describe('findFilesInDir', () => {
   });
 });
 
-describe('statsOfUrls,', () => {
+describe('stats', () => {
   it('Si el usuario escoge la opción --stats, retorna un objeto con la cantidad de links totales y únicos', () => {
     const arrayTest = [{
-      href: 'https://nodejs.org/e',
+      href: 'https://nodejs.org/',
       text: 'Node.js',
       file: 'Directory/DirPrueba/prueba2.md',
     }];
 
     const objectTest = {
-      total: 1,
-      unique: 1,
+      Total: 1,
+      Unique: 1,
     };
-    expect(statsOfUrls(arrayTest)).toStrictEqual(objectTest);
+    expect(stats(arrayTest)).toStrictEqual(objectTest);
+  });
+});
+
+describe('statsBroken', () => {
+  it('Si el usuario escoge las opciones --stats --validate, retorna un objeto con la cantidad de links rotos', () => {
+    const arrayTest = [{
+      href: 'https://nodejs.org/e',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba2.md',
+      status: 404,
+      message: 'FAIL',
+    }];
+
+    const objectTest = {
+      Broken: 1,
+    };
+    expect(statsBroken(arrayTest)).toStrictEqual(objectTest);
   });
 });
 

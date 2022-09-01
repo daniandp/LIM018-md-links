@@ -1,64 +1,88 @@
 const {
-  routeExists, routeAbsolute, mdFileExtension, isADirectory, /* readFile, */ getLinks, validateUrlStatus, findFilesInDir,
+  routeExists,
+  routeAbsolute,
+  mdFileExtension,
+  isADirectory,
+  /* readFile, */
+  getLinks,
+  validateUrlStatus,
+  findFilesInDir,
+  stats,
 } = require('./main');
 
 const mdLinks = (path, options) => new Promise((resolve, reject) => {
   const arrayAllFiles = [];
   const arrayAllPromises = [];
+  const arrayPrueba = [];
   // comprueba si la ruta existe, si existe, comprueba si es absoluta o relativa(la convierte a absoluta)
-  if (routeExists(path)) {
-    const pathAbsolute = routeAbsolute(path);
-    // SI LA RUTA ES DIRECTORIO
-    if (isADirectory(pathAbsolute)) { //  se hace la función recursiva para encontrar archivos dentro del directorio
-      const arrayFilesInDir = findFilesInDir(pathAbsolute); // función recursiva, retorna un array de rutas encontradas dentro del directorio
-      arrayFilesInDir.forEach((pathFile) => {
-        if (mdFileExtension(pathFile) === '.md') {
-          arrayAllFiles.push(pathFile);
-        } /* else {
+  if (!routeExists(path)) {
+    reject(new Error('La ruta ingresada no existe, por favor ingrese una ruta válida'));
+  }
+  const pathAbsolute = routeAbsolute(path);
+  // SI LA RUTA ES DIRECTORIO
+  if (isADirectory(pathAbsolute)) { //  se hace la función recursiva para encontrar archivos dentro del directorio
+    const arrayFilesInDir = findFilesInDir(pathAbsolute); // función recursiva, retorna un array de rutas encontradas dentro del directorio
+    arrayFilesInDir.forEach((pathFile) => {
+      if (mdFileExtension(pathFile) === '.md') {
+        arrayAllFiles.push(pathFile);
+      } /* else {
           console.log('No hay archivos markdown en el directorio');
         } */
+    });
+    arrayAllFiles.forEach((pathFile) => {
+      const arrayLinks = getLinks(pathFile);
+      arrayPrueba.push(arrayLinks);
+      // console.log('ARRAY LINKS', arrayLinks.concat(arrayLinks));
+      /*  if (arrayLinks !== []) { */
+      if (options.validate) {
+        const allPromises = validateUrlStatus(arrayLinks);
+        arrayAllPromises.push(allPromises);
+        /*  const allPromises = validateUrlStatus(arrayLinks)
+          .then((res) => res.flat())
+          .catch((error) => {
+            console.log(error);
+          });
+        arrayAllPromises.push(allPromises); */
+      } else {
+        resolve(arrayPrueba);
+      }
+      if (options.stats) {
+        const statsOfUrl = stats(arrayLinks);
+        arrayAllPromises.push(statsOfUrl);
+      }
+
+      /* } */ /* else {
+        console.log('No se encontraron links dentro de la ruta ingresada');
+      } */
+      // return arrayAllPromises;
+    });
+    Promise.all(arrayAllPromises)
+      .then((result) => {
+        resolve(result.flat());
       });
-      // console.log('ARRAY ALL FILES', arrayAllFiles);
-      arrayAllFiles.forEach((pathFile) => {
-        // const fileCont = readFile(pathFile);
-        const arrayLinks = getLinks(pathFile);
-        // console.log('ARRAY LINKS', arrayLinks);
-        // arrayAllLinks.push(arrayLinks);
-        // console.log('ARRAY ALL LINKS ---', arrayAllLinks.flat());
-        if (arrayLinks !== []) {
-          if (options.validate) {
-            // console.log('ARRAY LINKS', arrayLinks);
-            const allPromises = validateUrlStatus(arrayLinks)
-              .then((res) => res.flat())
-              // console.log('ARRAY ALL LINKS ------', arrayAllLinks.flat());
-              /*  arrayAllPromises.push(res.flat());
-               console.log('RESPUESTA', res.flat()); */
-              .catch((error) => {
-                console.log(error);
-              });
-            arrayAllPromises.push(allPromises);
-            // resolve(arrayAllPromises);
-            // console.log(' VALIDATE URL ', validateUrlStatus(arrayLinks));
-            // resolve(arrayAllLinks);
-          }
-        } /* else {
-          console.log('No se encontraron links dentro de la ruta ingresada');
-        } */
-      });
-      // console.log('ARRAY DE PROMESAS', arrayAllPromises);
-      // resolve(arrayAllPromises);
-      Promise.all(arrayAllPromises)
-        .then((res) => {
-          resolve(res.flat());
-          // console.log('QUESSSSESTOOOOOOO', res.flat());
-        });
+
+    // SI LA RUTA ES UN ARCHIVO
+  }
+  if (mdFileExtension(pathAbsolute) === '.md') {
+    const arrayLinks = getLinks(pathAbsolute);
+    if (options.validate && options.stats) {
+      console.log('ESTAMOS ACA');
+      return;
     }
-  } else {
-    reject(new Error('La ruta ingresada no exise, por favor ingrese una ruta válida'));
+    if (options.validate) {
+      validateUrlStatus(arrayLinks).then((res) => resolve(res));
+      return;
+    }
+    if (options.stats) {
+      const statsOfUrl = stats(arrayLinks);
+      resolve(statsOfUrl);
+      return;
+    }
+    resolve(arrayLinks);
   }
 });
 
-mdLinks('Directory', { validate: true })
+mdLinks('Directory/DirPrueba/prueba.md', { validate: true, stats: true })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })
