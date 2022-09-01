@@ -13,7 +13,7 @@ const {
 
 const mdLinks = (path, options) => new Promise((resolve, reject) => {
   const arrayAllFiles = [];
-  const arrayAllPromises = [];
+  let arrayAllPromises = [];
   const arrayJustLinks = [];
   // comprueba si la ruta existe, si existe, comprueba si es absoluta o relativa(la convierte a absoluta)
   if (!routeExists(path)) {
@@ -37,7 +37,7 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
       // hace la petición HTTP(axios) de todos los links y almacena en una constante
       const allPromises = validateUrlStatus(arrayLinks);
       // pushea todas las promesas del axios a un array
-      arrayAllPromises.push(allPromises);
+      arrayAllPromises = arrayAllPromises.concat(allPromises);
     });
 
     if (options.validate && options.stats) {
@@ -52,7 +52,7 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
     if (options.validate) {
       Promise.all(arrayAllPromises)
         .then((response) => {
-          resolve(response.flat());
+          resolve(response);
         });
       return;
     }
@@ -102,13 +102,13 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   }
 });
 
-/* mdLinks('Directory', { validate: true, stats: true })
+mdLinks('Directory', { validate: true, stats: false })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })
   .catch((error) => {
     console.log('este es el error de la promesa mdlinks =>----', error);
-  }); */
+  });
 
 module.exports = {
   mdLinks,

@@ -4,10 +4,6 @@ const {
   mdLinks
 } = require('./mdLinks');
 
-/* const {
-  routeExists, routeAbsolute, mdFileExtension, isADirectory, readFile, getLinks, validateUrlStatus, findFilesInDir,
-} = require('./main'); */
-
 const path = process.argv[2];
 const options = process.argv;
 

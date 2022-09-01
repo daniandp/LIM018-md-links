@@ -69,7 +69,7 @@ const validateUrlStatus = (arrayOfLinks) => {
       });
     arrayLinksPromises.push(validateLinks);
   }
-  return Promise.all(arrayLinksPromises); // retorna todas las promesas, un array de objetos con una promesa por cada link
+  return arrayLinksPromises; // retorna todas las promesas, un array de objetos con una promesa por cada link
 };
 
 // FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS MARKDOWN EN ÉL
