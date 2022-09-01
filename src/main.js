@@ -83,8 +83,8 @@ const findFilesInDir = (pathDir) => {
   listOfFiles.forEach((file) => {
     const fullPath = path.join(pathDir, file);
     if (isADirectory(fullPath)) {
-      const readDirAgain = findFilesInDir(fullPath);
-      arrayAllFiles = arrayAllFiles.concat(readDirAgain);
+      const readAgain = findFilesInDir(fullPath);
+      arrayAllFiles = arrayAllFiles.concat(readAgain);
     } else if (mdFileExtension(fullPath) === '.md') {
       arrayAllFiles.push(fullPath);
     }

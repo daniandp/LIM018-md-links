@@ -30,9 +30,13 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
     });
 
     arrayAllFiles.forEach((pathFile) => {
+      // lee cada archivo y obtiene los links dentro
       const arrayLinks = getLinks(pathFile);
+      // pushea a un array que se resuelve si validate y stats es false
       arrayJustLinks.push(arrayLinks);
+      // hace la petición HTTP(axios) de todos los links y almacena en una constante
       const allPromises = validateUrlStatus(arrayLinks);
+      // pushea todas las promesas del axios a un array
       arrayAllPromises.push(allPromises);
     });
 
@@ -67,9 +71,11 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
 
   // SI LA RUTA ES UN ARCHIVO
   if (mdFileExtension(pathAbsolute) === '.md') {
+    // lee el archivo y guarda los links en una constante
     const arrayLinks = getLinks(pathAbsolute);
-
+    // hace la petición HTTP (axios) de todos los links y almacena en una constante
     const allPromises = validateUrlStatus(arrayLinks);
+    // puseha todas las promesas del axios a un array
     arrayAllPromises.push(allPromises);
 
     if (options.validate && options.stats) {
@@ -96,13 +102,13 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   }
 });
 
-mdLinks('Directory', { validate: true, stats: true })
+/* mdLinks('Directory', { validate: true, stats: true })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })
   .catch((error) => {
     console.log('este es el error de la promesa mdlinks =>----', error);
-  });
+  }); */
 
 module.exports = {
   mdLinks,
