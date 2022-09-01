@@ -8,12 +8,13 @@ const {
   validateUrlStatus,
   findFilesInDir,
   stats,
+  statsBroken,
 } = require('./main');
 
 const mdLinks = (path, options) => new Promise((resolve, reject) => {
   const arrayAllFiles = [];
   const arrayAllPromises = [];
-  const arrayPrueba = [];
+  const arrayJustLinks = [];
   // comprueba si la ruta existe, si existe, comprueba si es absoluta o relativa(la convierte a absoluta)
   if (!routeExists(path)) {
     reject(new Error('La ruta ingresada no existe, por favor ingrese una ruta válida'));
@@ -25,64 +26,77 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
     arrayFilesInDir.forEach((pathFile) => {
       if (mdFileExtension(pathFile) === '.md') {
         arrayAllFiles.push(pathFile);
-      } /* else {
-          console.log('No hay archivos markdown en el directorio');
-        } */
+      }
     });
+
     arrayAllFiles.forEach((pathFile) => {
       const arrayLinks = getLinks(pathFile);
-      arrayPrueba.push(arrayLinks);
-      // console.log('ARRAY LINKS', arrayLinks.concat(arrayLinks));
-      /*  if (arrayLinks !== []) { */
-      if (options.validate) {
-        const allPromises = validateUrlStatus(arrayLinks);
-        arrayAllPromises.push(allPromises);
-        /*  const allPromises = validateUrlStatus(arrayLinks)
-          .then((res) => res.flat())
-          .catch((error) => {
-            console.log(error);
-          });
-        arrayAllPromises.push(allPromises); */
-      } else {
-        resolve(arrayPrueba);
-      }
-      if (options.stats) {
-        const statsOfUrl = stats(arrayLinks);
-        arrayAllPromises.push(statsOfUrl);
-      }
-
-      /* } */ /* else {
-        console.log('No se encontraron links dentro de la ruta ingresada');
-      } */
-      // return arrayAllPromises;
+      arrayJustLinks.push(arrayLinks);
+      const allPromises = validateUrlStatus(arrayLinks);
+      arrayAllPromises.push(allPromises);
     });
-    Promise.all(arrayAllPromises)
-      .then((result) => {
-        resolve(result.flat());
-      });
 
-    // SI LA RUTA ES UN ARCHIVO
-  }
-  if (mdFileExtension(pathAbsolute) === '.md') {
-    const arrayLinks = getLinks(pathAbsolute);
     if (options.validate && options.stats) {
-      console.log('ESTAMOS ACA');
+      Promise.all(arrayAllPromises)
+        .then((response) => {
+          const statsAndBrokenLinks = { ...stats(response.flat()), ...statsBroken(response.flat()) };
+          resolve(statsAndBrokenLinks);
+        });
       return;
     }
+
+    if (options.validate) {
+      Promise.all(arrayAllPromises)
+        .then((response) => {
+          resolve(response.flat());
+        });
+      return;
+    }
+
+    if (options.stats) {
+      Promise.all(arrayAllPromises)
+        .then((response) => {
+          const statsOfLinks = stats(response.flat());
+          resolve(statsOfLinks);
+        });
+      return;
+    }
+
+    resolve(arrayJustLinks.flat());
+  }
+
+  // SI LA RUTA ES UN ARCHIVO
+  if (mdFileExtension(pathAbsolute) === '.md') {
+    const arrayLinks = getLinks(pathAbsolute);
+
+    const allPromises = validateUrlStatus(arrayLinks);
+    arrayAllPromises.push(allPromises);
+
+    if (options.validate && options.stats) {
+      Promise.all(arrayAllPromises)
+        .then((response) => {
+          const statsAndBrokenLinks = { ...stats(response.flat()), ...statsBroken(response.flat()) };
+          resolve(statsAndBrokenLinks);
+        });
+      return;
+    }
+
     if (options.validate) {
       validateUrlStatus(arrayLinks).then((res) => resolve(res));
       return;
     }
+
     if (options.stats) {
-      const statsOfUrl = stats(arrayLinks);
-      resolve(statsOfUrl);
+      const statsOfLinks = stats(arrayLinks);
+      resolve(statsOfLinks);
       return;
     }
+
     resolve(arrayLinks);
   }
 });
 
-mdLinks('Directory/DirPrueba/prueba.md', { validate: true, stats: true })
+mdLinks('Directory', { validate: true, stats: true })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })

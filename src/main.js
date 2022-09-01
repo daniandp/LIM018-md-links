@@ -127,4 +127,4 @@ module.exports = {
 };
 
 // regex diana = /\[([^\[]+)\](\(.*\))/gm;
-// regex bella = /\[(.*?)\]\(.*?\)/gm; */
+// regex bella = /\[(.*?)\]\(.*?\)/gm;
