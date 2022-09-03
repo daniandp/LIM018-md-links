@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "libreria para comporbar el estado de los links en documentos markdown",
   "keywords": [
-    "javascript", 
+    "javascript",
     "nodejs"
   ],
   "author": {
-    "name": "Daniela Andrade", 
+    "name": "Daniela Andrade",
     "url": "https://github.com/daniandp"
   },
   "engines": {
@@ -19,11 +19,9 @@
     "pretest_": "npm run eslint",
     "test": "jest --coverage"
   },
-
   "bin": {
     "md-links": "./src/cli.js"
   },
-
   "devDependencies": {
     "eslint": "^8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -31,6 +29,7 @@
     "jest": "^28.1.3"
   },
   "dependencies": {
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "table": "^6.8.0"
   }
 }

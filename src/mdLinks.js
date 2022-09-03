@@ -76,7 +76,7 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
     // hace la petición HTTP (axios) de todos los links y almacena en una constante
     const allPromises = validateUrlStatus(arrayLinks);
     // puseha todas las promesas del axios a un array
-    arrayAllPromises.push(allPromises);
+    arrayAllPromises = arrayAllPromises.concat(allPromises);
 
     if (options.validate && options.stats) {
       Promise.all(arrayAllPromises)
@@ -88,7 +88,10 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
     }
 
     if (options.validate) {
-      validateUrlStatus(arrayLinks).then((res) => resolve(res));
+      Promise.all(arrayAllPromises)
+        .then((response) => {
+          resolve(response);
+        });
       return;
     }
 
@@ -102,14 +105,14 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   }
 });
 
-mdLinks('Directory', { validate: true, stats: false })
+/* mdLinks('Directory/DirPrueba/prueba.md', { validate: true, stats: false })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })
   .catch((error) => {
     console.log('este es el error de la promesa mdlinks =>----', error);
   });
-
+ */
 module.exports = {
   mdLinks,
 };
