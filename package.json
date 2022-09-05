@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node src/mdLinks.js",
     "eslint": "eslint --ext .js src/ test/",
-    "pretest_": "npm run eslint",
+    "pretest": "npm run eslint",
     "test": "jest --coverage"
   },
   "bin": {

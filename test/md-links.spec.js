@@ -1,3 +1,4 @@
+const axios = require('axios');
 const {
   routeExists,
   routeAbsolute,
@@ -12,6 +13,8 @@ const {
   stats,
   statsBroken,
 } = require('../src/main');
+
+const { mdLinks } = require('../src/mdLinks');
 
 jest.mock('axios');
 
@@ -89,31 +92,71 @@ describe('validateUrlStatus', () => {
       status: 200,
       message: 'OK',
     }];
+
+    axios.get.mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+    });
+
     const arrayAllPromises = validateUrlStatus(arrayOfLinks);
-    console.log('ARRAY LINKS PROMISE --', arrayAllPromises);
     Promise.all(arrayAllPromises)
       .then((response) => {
         expect(response).toStrictEqual(responseLink);
         done();
       });
   });
-  it('Hace la consulta HTTP de cada link y retorna status 404 y el message FAIL de cada uno como propiedades dentro del objeto de cada link', (done) => {
+  it('Hace la consulta HTTP de cada link y retorna status 404 y el message FAIL de los links rotos', (done) => {
     const arrayTest = [{
       href: 'https://nodejs.org/e',
       text: 'Node.js',
-      file: 'Directory/DirPrueba/prueba2.md',
+      file: 'Directory/DirPrueba/prueba.md',
     }];
     const responseLink = [{
       href: 'https://nodejs.org/e',
       text: 'Node.js',
-      file: 'Directory/DirPrueba/prueba2.md',
+      file: 'Directory/DirPrueba/prueba.md',
       status: 404,
       message: 'FAIL',
     }];
+
+    axios.get.mockRejectedValueOnce({
+      response: {
+        status: 404,
+      },
+    });
+
     const arrayLinksPromises = validateUrlStatus(arrayTest);
     Promise.all(arrayLinksPromises)
-      .catch((error) => {
-        expect(error).toStrictEqual(responseLink);
+      .then((response) => {
+        expect(response).toStrictEqual(responseLink);
+        done();
+      });
+  });
+
+  it('Hace la consulta HTTP de cada link y retorna status -3008 y el message FAIL de los links rotos', (done) => {
+    const arrayTest = [{
+      href: 'https://nodejs./',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba.md',
+    }];
+    const responseLink = [{
+      href: 'https://nodejs./',
+      text: 'Node.js',
+      file: 'Directory/DirPrueba/prueba.md',
+      status: -3008,
+      message: 'FAIL',
+    }];
+
+    axios.get.mockRejectedValueOnce({
+      response: {
+        status: -3008,
+      },
+    });
+
+    const arrayLinksPromises = validateUrlStatus(arrayTest);
+    Promise.all(arrayLinksPromises)
+      .then((response) => {
+        expect(response).toStrictEqual(responseLink);
         done();
       });
   });
@@ -162,12 +205,54 @@ describe('statsBroken', () => {
   });
 });
 
-/* const mdLinks = require('../');
-
 describe('mdLinks', () => {
-
-  it('should...', () => {
-    console.log('FIX ME!');
+  it('Si la ruta no existe, retorna un mensaje indicando que la ruta ingresada no existe', () => {
+    mdLinks('Directory/archiv.md', { validate: false })
+      .catch((error) => {
+        expect(error).toStrictEqual(new Error('La ruta ingresada no existe, por favor ingrese una ruta válida'));
+      });
   });
 
-}); */
+  it('Si la ruta es un archivo y validate es true', (done) => {
+    const responseLinks = [
+      {
+        href: 'https://www.npmjs.com/',
+        text: 'Sitio oficial de npm (en inglés)',
+        file: 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\Directory\\archivo.md',
+        status: 200,
+        message: 'OK',
+      },
+      {
+        href: 'https://developers.google.com/v8/',
+        text: 'motor de JavaScript V8 de Chrome',
+        file: 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\Directory\\archivo.md',
+        status: 200,
+        message: 'OK',
+      },
+    ];
+
+    axios.get.mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+    });
+
+    mdLinks('D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\Directory\\archivo.md', { validate: true, stats: false })
+      .then((response) => {
+        expect(response).toStrictEqual(responseLinks);
+        done();
+      });
+  });
+
+  it.only('Si la ruta es un archivo y stats es true', () => {
+    const objResponse = { Total: 2, Unique: 2 };
+    axios.get.mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+    });
+
+    mdLinks('Directory/archivo.md', { validate: false, stats: true })
+      .then((response) => {
+        expect(response).toStrictEqual(objResponse);
+      });
+  });
+});
