@@ -1,11 +1,8 @@
 {
   "name": "md-links-daniandp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "libreria para comporbar el estado de los links en documentos markdown",
-  "keywords": [
-    "javascript",
-    "nodejs"
-  ],
+  "main": "src/mdLinks.js",
   "author": {
     "name": "Daniela Andrade",
     "url": "https://github.com/daniandp"
@@ -19,6 +16,19 @@
     "pretest": "npm run eslint",
     "test": "jest --coverage"
   },
+  "license": "ISC",
+
+  "bugs": {
+    "url": "https://github.com/daniandp/LIM018-md-links/issues"
+  },
+  "homepage": "https://github.com/daniandp/LIM018-md-links#readme",
+  "keywords": [
+    "javascript",
+    "nodejs",
+    "node",
+    "markdown"
+  ],
+
   "bin": {
     "md-links": "./src/cli.js"
   },
@@ -29,7 +39,6 @@
     "jest": "^28.1.3"
   },
   "dependencies": {
-    "axios": "^0.27.2",
-    "table": "^6.8.0"
+    "axios": "^0.27.2"
   }
 }

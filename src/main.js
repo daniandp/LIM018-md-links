@@ -20,9 +20,6 @@ const isADirectory = (pathFile) => fs.statSync(pathFile).isDirectory();
 // FUNCIÓN PARA LEER EL DIRECTORIO
 const readDirectory = (pathFile) => fs.readdirSync(pathFile);
 
-// FUNCIÓN PARA LEER EL ARCHIVO
-// const readFile = (pathFile) => fs.readFileSync(pathFile, 'utf-8');
-
 // FUNCIÓN PARA EXTRAER LOS LINKS EN EL ARCHIVO MARKDOWN
 const getLinks = (pathFile) => {
   const arrayOfLinks = [];
@@ -75,9 +72,6 @@ const validateUrlStatus = (arrayOfLinks) => {
 // FUNCIÓN RECURSIVA PARA LEER DIRECTORIOS Y ENCONTRAR ARCHIVOS MARKDOWN EN ÉL
 const findFilesInDir = (pathDir) => {
   let arrayAllFiles = [];
-  /*  if (!isADirectory(pathDir)) {
-    return [pathDir]; // si no es un directorio(false), retorna solo la ruta del archivo
-  } */
   // leyendo el directorio para encontrar archivos
   const listOfFiles = readDirectory(pathDir);
   listOfFiles.forEach((file) => {
@@ -91,8 +85,6 @@ const findFilesInDir = (pathDir) => {
   });
   return arrayAllFiles; // retorna un array con las rutas de los archivos markdown que están dentro del directorio
 };
-
-// console.log(findFilesInDir('Directory'));
 
 // FUNCIÓN PARA OBTENER ESTADÍSTICAS DE LOS URLS
 const stats = (arrayOfLinks) => {
@@ -116,15 +108,10 @@ module.exports = {
   routeAbsolute,
   mdFileExtension,
   isADirectory,
-  /*  isAFile, */
   readDirectory,
-  /*  readFile, */
   getLinks,
   validateUrlStatus,
   findFilesInDir,
   stats,
   statsBroken,
 };
-
-// regex diana = /\[([^\[]+)\](\(.*\))/gm;
-// regex bella = /\[(.*?)\]\(.*?\)/gm;

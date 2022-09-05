@@ -4,9 +4,7 @@ const {
   routeAbsolute,
   mdFileExtension,
   isADirectory,
-  /*  isAFile, */
   readDirectory,
-  /* readFile, */
   getLinks,
   validateUrlStatus,
   findFilesInDir,
@@ -46,26 +44,12 @@ describe('isADirectory', () => {
   });
 });
 
-/* describe('isAFile', () => {
-  it('Si la ruta corresponde a un archivo, debe retortar true, si es un directorio retorna false', () => {
-    expect(isAFile('Directory/DirPrueba/prueba.md')).toBe(true);
-    expect(isAFile('D:/Casa/Google Drive/Daniela Andrade/LABORATORIA/LIM018-md-links/Directory')).toBe(false);
-  });
-}); */
-
 describe('readDirectory', () => {
   it('Lee el directorio y retorna un array con los archivos que tiene dentro', () => {
     const directoryContent = ['archivo.md', 'DirPrueba'];
     expect(readDirectory('Directory')).toEqual(directoryContent);
   });
 });
-
-/* describe('readFile', () => {
-  it('Lee el archivo y retorna una cadena con el contenido del archivo markdown', () => {
-    const fileContent = 'Hola mundo 2 [Node.js](https://nodejs.org/)';
-    expect(readFile('Directory/DirPrueba/prueba2.md')).toBe(fileContent);
-  });
-}); */
 
 describe('getLinks', () => {
   it('Retorna un array de objetos, un objeto por cada link encontrado, con las propiedades href, text y file', () => {
@@ -213,7 +197,7 @@ describe('mdLinks', () => {
       });
   });
 
-  it('Si la ruta es un archivo y validate es true', (done) => {
+  /* it('Si la ruta es un archivo y validate es true', (done) => {
     const responseLinks = [
       {
         href: 'https://www.npmjs.com/',
@@ -241,9 +225,9 @@ describe('mdLinks', () => {
         expect(response).toStrictEqual(responseLinks);
         done();
       });
-  });
+  }); */
 
-  it.only('Si la ruta es un archivo y stats es true', () => {
+  /* it('Si la ruta es un archivo y stats es true', () => {
     const objResponse = { Total: 2, Unique: 2 };
     axios.get.mockResolvedValueOnce({
       status: 200,
@@ -254,5 +238,5 @@ describe('mdLinks', () => {
       .then((response) => {
         expect(response).toStrictEqual(objResponse);
       });
-  });
+  }); */
 });

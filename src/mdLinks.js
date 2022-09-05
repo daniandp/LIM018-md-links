@@ -111,8 +111,8 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   })
   .catch((error) => {
     console.log('este es el error de la promesa mdlinks =>----', error);
-  });
- */
+  }); */
+
 module.exports = {
   mdLinks,
 };
