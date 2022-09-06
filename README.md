@@ -6,7 +6,9 @@ archivos con extensión .md. Esta nos permite obtener estadísticas de los links
 encontrados, información sobre el estado de los links a través de peticiones HTTP, así como datos generales. 
 
 ## Diagrama de flujo
-![diagrama de flujo markdown](images/diagramaDeFlujo.png)
+
+![diagramaDeFlujo](https://user-images.githubusercontent.com/105577142/188552025-2178a871-0a82-4c51-b7ba-3ec34af65289.png)
+
 
 ## Instalación
 
@@ -54,23 +56,23 @@ Para ejecutar la línea de comandos en la terminal se debe utilizar el siguiente
 
 #### `<path-to-file>`: ruta absoluta o relativa de archivo o directorio
 
-![mdLinks Default](images/mdLinks_default.png)
+![mdLinks_default](https://user-images.githubusercontent.com/105577142/188552063-d252cc2e-930e-4e55-8819-ed3e05cfc5b5.png)
 
 #### `md-links <path-to-file> --validate / -v`
 
-![mdLinks validate](images/mdLinks_validate.png)
+![mdLinks_validate](https://user-images.githubusercontent.com/105577142/188552099-88ead0c6-7aa4-4c47-b8b2-11706121f04e.png)
 
 #### `md-links <path-to-file> --stats / -s`
 
-![mdLinks stats](images/mdLinks_stats.png)
+![mdLinks_stats](https://user-images.githubusercontent.com/105577142/188552177-ca37a76d-8059-4875-ba46-c0ed5bdbef11.png)
 
 #### `md-links <path-to-file> --validate --stats / -v -s`
 
-![mdLinks validate y stats](images/mdLinks_validate_stats.png)
+![mdLinks_validate_stats](https://user-images.githubusercontent.com/105577142/188552203-0bc5ecb0-9fa0-47f7-9173-e3de62913c1a.png)
 
 #### `md-links --help / -h`
 
-![mdLinks help](images/mdLinks_help.png)
+![mdLinks_help](https://user-images.githubusercontent.com/105577142/188552225-3edc7586-a950-40cf-a102-87067701fb9b.png)
 
 # Markdown Links
 
