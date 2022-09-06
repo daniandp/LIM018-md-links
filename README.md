@@ -1,5 +1,79 @@
 # Markdown Links
 
+Markdown links es una biblioteca para examinar archivos tipo markdown, a través de rutas ingresadas en la 
+de la línea de comando (CLI) en la terminak, las cuales pueden ser archivos unitarios o directorios que contengan 
+archivos con extensión .md. Esta nos permite obtener estadísticas de los links únicos, totales y rotos de los enlaces 
+encontrados, información sobre el estado de los links a través de peticiones HTTP, así como datos generales. 
+
+## Diagrama de flujo
+![diagrama de flujo markdown](images/diagramaDeFlujo.png)
+
+## Instalación
+
+Para instalar la biblioteca se debe ejecutar el siguiente comando:
+
+`npm i md-links-daniandp -g`
+
+## Guía de uso - Comandos CLI
+
+Para ejecutar la línea de comandos en la terminal se debe utilizar el siguiente formato:
+
+`md-links <path-to-file> [options]`
+
+`<path-to-file>`: es la ruta del archivo o directorio.
+ Al ingresar solo la ruta del archivo o directorio, obtendrá información general sobre los 
+    links encontrados en los archivo, con el siguiente formato:
+        -href: URL encontrada
+        -text: Texto qe aparecía dentro del link
+        -file: ruta del archivo donde se encontró el link
+        
+`[options]`: opciones para obtener los resultados, son las siguientes:
+
+* `--validate / -v`: Peticiones HTTP con axios, obtendrá
+    la información con el siguiente formato:
+        -href: URL encontrada
+        -text: Texto qe aparecía dentro del link
+        -file: ruta del archivo donde se encontró el link
+        -status: código de respuesta HTTP
+        -message: OK en caso de éxito o FAIL en caso de fallo
+        
+* `--stats / -s`: Estadísticas de links totales y únicos, obtendrá
+    la información con el siguiente formato:
+        -Total: cantidad total de los links encontrados
+        -Unique: cantidad de links únicos
+        
+* `--validate --stats / -v -s`: Estadísticas de links totales, únicos y rotos, 
+    obtendrá la información con el siguiente formato:
+        -Total: cantidad total de los links encontrados
+        -Unique: cantidad de links únicos
+        -Broken: cantidad de links rotos
+
+* `--help / -h`: información y ayuda sobre los comandos 
+
+## Ejemplos
+
+#### `<path-to-file>`: ruta absoluta o relativa de archivo o directorio
+
+![mdLinks Default](images/mdLinks_default.png)
+
+#### `md-links <path-to-file> --validate / -v`
+
+![mdLinks validate](images/mdLinks_validate.png)
+
+#### `md-links <path-to-file> --stats / -s`
+
+![mdLinks stats](images/mdLinks_stats.png)
+
+#### `md-links <path-to-file> --validate --stats / -v -s`
+
+![mdLinks validate y stats](images/mdLinks_validate_stats.png)
+
+#### `md-links --help / -h`
+
+![mdLinks help](images/mdLinks_help.png)
+
+# Markdown Links
+
 ## Índice
 
 * [1. Preámbulo](#1-preámbulo)
