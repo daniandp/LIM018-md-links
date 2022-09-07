@@ -1,6 +1,6 @@
 {
   "name": "md-links-daniandp",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "libreria para comporbar el estado de los links en documentos markdown",
   "main": "src/mdLinks.js",
   "author": {

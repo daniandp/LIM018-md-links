@@ -105,7 +105,7 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   }
 });
 
-/* mdLinks('Directory/DirPrueba/prueba.md', { validate: true, stats: false })
+/* mdLinks('Directory', { validate: true, stats: false })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })

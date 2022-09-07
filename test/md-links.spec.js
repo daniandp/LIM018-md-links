@@ -77,7 +77,7 @@ describe('validateUrlStatus', () => {
       message: 'OK',
     }];
 
-    axios.get.mockResolvedValueOnce({
+    axios.get.mockResolvedValue({
       status: 200,
       statusText: 'OK',
     });
@@ -103,7 +103,7 @@ describe('validateUrlStatus', () => {
       message: 'FAIL',
     }];
 
-    axios.get.mockRejectedValueOnce({
+    axios.get.mockRejectedValue({
       response: {
         status: 404,
       },
@@ -131,7 +131,7 @@ describe('validateUrlStatus', () => {
       message: 'FAIL',
     }];
 
-    axios.get.mockRejectedValueOnce({
+    axios.get.mockRejectedValue({
       response: {
         status: -3008,
       },
@@ -197,7 +197,52 @@ describe('mdLinks', () => {
       });
   });
 
-  /* it('Si la ruta es un archivo y validate es true', (done) => {
+  it('Si la ruta es un directorio y validate es true y stats es true', () => {
+    const objResponse = { Total: 8, Unique: 6, Broken: 2 };
+    axios.get.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+    }).mockRejectedValueOnce({
+      status: 404,
+    }).mockRejectedValueOnce({
+      status: -3008,
+    });
+
+    mdLinks('Directory', { validate: true, stats: true })
+      .then((response) => {
+        expect(response).toStrictEqual(objResponse);
+      });
+  });
+
+  it('Si la ruta es un directorio y stats es true', () => {
+    const objResponse = { Total: 8, Unique: 6 };
+    axios.get.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+    });
+
+    mdLinks('Directory', { validate: false, stats: true })
+      .then((response) => {
+        expect(response).toStrictEqual(objResponse);
+      });
+  });
+
+  it('Si la ruta es un archivo y validate es true y stats es true', () => {
+    const objResponse = { Total: 2, Unique: 2, Broken: 1 };
+    axios.get.mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+    }).mockRejectedValueOnce({
+      status: 404,
+    });
+
+    mdLinks('Directory/archivo.md', { validate: true, stats: true })
+      .then((response) => {
+        expect(response).toStrictEqual(objResponse);
+      });
+  });
+
+  it('Si la ruta es un archivo y validate es true', (done) => {
     const responseLinks = [
       {
         href: 'https://www.npmjs.com/',
@@ -215,7 +260,7 @@ describe('mdLinks', () => {
       },
     ];
 
-    axios.get.mockResolvedValueOnce({
+    axios.get.mockResolvedValue({
       status: 200,
       statusText: 'OK',
     });
@@ -225,11 +270,11 @@ describe('mdLinks', () => {
         expect(response).toStrictEqual(responseLinks);
         done();
       });
-  }); */
+  });
 
-  /* it('Si la ruta es un archivo y stats es true', () => {
+  it('Si la ruta es un archivo y stats es true', () => {
     const objResponse = { Total: 2, Unique: 2 };
-    axios.get.mockResolvedValueOnce({
+    axios.get.mockResolvedValue({
       status: 200,
       statusText: 'OK',
     });
@@ -238,5 +283,5 @@ describe('mdLinks', () => {
       .then((response) => {
         expect(response).toStrictEqual(objResponse);
       });
-  }); */
+  });
 });
