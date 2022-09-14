@@ -105,14 +105,14 @@ const mdLinks = (path, options) => new Promise((resolve, reject) => {
   }
 });
 
-/* mdLinks('Directory', { validate: true, stats: false })
+/* mdLinks('DirecPrueba', { validate: true, stats: false })
   .then((response) => {
     console.log('resolve de la promesa de mdlinks =>----', response);
   })
   .catch((error) => {
     console.log('este es el error de la promesa mdlinks =>----', error);
-  }); */
-
+  });
+ */
 module.exports = {
   mdLinks,
 };

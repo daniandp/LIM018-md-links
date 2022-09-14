@@ -214,6 +214,36 @@ describe('mdLinks', () => {
       });
   });
 
+  it('Si la ruta es un directorio y validate es true', (done) => {
+    const responseLinks = [
+      {
+        href: 'https://docs.npmjs.com/misc/scripts',
+        text: 'scripts - Documentación oficial (en inglés)',
+        file: 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\DirecPrueba\\Direc\\pruebaprueba.md',
+        status: 200,
+        message: 'OK',
+      },
+      {
+        href: 'https://jestjs.io/docs/es-ES/manual-mocks',
+        text: 'Manual Mocks con Jest - Documentación oficial',
+        file: 'D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\DirecPrueba\\file.md',
+        status: 200,
+        message: 'OK',
+      },
+    ];
+
+    axios.get.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+    });
+
+    mdLinks('D:\\Casa\\Google Drive\\Daniela Andrade\\LABORATORIA\\LIM018-md-links\\DirecPrueba', { validate: true, stats: false })
+      .then((response) => {
+        expect(response).toStrictEqual(responseLinks);
+        done();
+      });
+  });
+
   it('Si la ruta es un directorio y stats es true', () => {
     const objResponse = { Total: 8, Unique: 6 };
     axios.get.mockResolvedValue({
